@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="zjt@10.65.112.160:22 password (7)" remoteFilesAllowedToDisappearOnAutoupload="false">
     <serverData>
       <paths name="admin123@10.65.143.32:22 key">
         <serverdata>
@@ -100,6 +100,21 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="zjt@10.65.112.160:22 password (6)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/media/zjt/DPUL" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
+      <paths name="zjt@10.65.112.160:22 password (7)">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/media/zjt/DPUL" local="$PROJECT_DIR$" />
+          </mappings>
+        </serverdata>
+      </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>

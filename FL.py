@@ -1,30 +1,17 @@
 import copy
 import os
-
-import numpy as np
 import torch
 from peft import LoraConfig, get_peft_model
 from torchvision import datasets
-from matplotlib import pyplot as plt
-from torch import nn
 from torchvision import transforms
-from torchvision.datasets import MNIST
-from torch import nn
 from tqdm import tqdm
 from transformers import ViTImageProcessor, ViTForImageClassification,ViTModel
-
-from models.Autoencoder import AutoEncoder
-from models.Fed import FedAvg
 from models.FedAvg import FedAvg_noniid_float, FedAvg_noniid_float_www
-from models.Nets import CNNMnist, CNNCifar, MLP, LeNet5, VGG11
 from models.Update import LocalUpdate, LocalUpdate_vit
-from models.Vectomodel import vectomodel, vectomodel_vit
-from models.seed import setup_seed
+from models.Vectomodel import  vectomodel_vit
 from models.test import test_img, test_vit
 from utils.options import args_parser
-from utils.sample import cifar100_noniid, imagenet_tiny_noniid, cinic10_noniid, cifar_noniid
-from utils.sampling import mnist_iid, mnist_noniid, cifar_iid
-from utils.seed import set_seed
+from utils.sample import cifar_noniid, imagenet_tiny_noniid, cinic10_noniid, cifar_noniid
 from utils.load_datasets import TinyImageNet, CINIC10
 
 if __name__ == '__main__':

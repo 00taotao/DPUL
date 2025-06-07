@@ -212,7 +212,7 @@ def main():
         pool.map(trainer.train_slice, [j for j in range(args.slices)])
     end = time.time()
     print('time:', end - start)
-    # 测试自编码器，只测最后一轮
+    # test VAE 测试自编码器，只测最后一轮
     tmp = copy.deepcopy(M0)
     cos_list = []
     for i in range(args.slices):
@@ -232,7 +232,7 @@ def main():
             M_last[j] = output.detach().clone()
             # 测试cos
             print(cos(M_last[j], MU_slices[-1][j]))
-    # 将M_last 拼回M_test
+    # 将M_last 拼回 M_test
     M_test_new = M_test.clone().detach()
     for j in range(args.slices):
         M_test_new[j::args.slices] = M_last[j].detach().clone()
@@ -246,8 +246,6 @@ def main():
     with open('./save/FUL/{}/N{}/E{}/MU_vae.txt'.format(args.dataset, args.num_users, FLepoch), 'w') as f:
         f.write(str(acc) + '\n')
         f.write(str(loss) + '\n')
-
-
 
     # save VAE 保存10个自编码器
     for i in range(args.slices):
