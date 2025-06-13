@@ -46,7 +46,7 @@ def args_parser():
     # beta = 0.5
     parser.add_argument('--beta', type=float, default=0.5, help="beta")
     # lambda = 5
-    parser.add_argument('--lambda_', type=float, default=5, help="lambda")
+    parser.add_argument('--lambda_', type=float, default=6, help="lambda")
 
     args = parser.parse_args()
     return args

@@ -1,29 +1,19 @@
 import copy
 import os
-from concurrent.futures import ThreadPoolExecutor, as_completed
-# from multiprocessing import Pool, Manager
-import numpy as np
 import torch
 from peft import LoraConfig, get_peft_model
 from torchvision import datasets
-from matplotlib import pyplot as plt
-from torch import nn
 from torchvision import transforms
-from torchvision.datasets import MNIST
 from torch import nn
 from transformers import ViTImageProcessor, ViTForImageClassification
 
-from models.Autoencoder import AutoEncoder, VAE, VAE1
-from models.Fed import FedAvg
-from models.Nets import CNNMnist, CNNCifar, MLP
-from models.Update import LocalUpdate
+
 from models.VAE import BetaVAE_H
 from models.Vectomodel import vectomodel_vit
 from models.test import test_img, test_vit
 from utils.load_datasets import TinyImageNet, CINIC10
 from utils.options import args_parser
-from utils.sample import cifar100_noniid, cinic10_noniid, imagenet_tiny_noniid
-from utils.sampling import mnist_iid, mnist_noniid, cifar_iid
+from utils.sample import cifar_noniid, cinic10_noniid, imagenet_tiny_noniid, cifar_iid
 from utils.seed import set_seed
 from tqdm import tqdm
 import torch.multiprocessing as mp
@@ -70,6 +60,7 @@ def main():
     args.beta = 0.5
     args.dataset = 'cifar10'
     args.model = 'Vits'
+    args.lambda_ = 6
     FLepoch = 50
     if not os.path.exists('./save/FUL/{}/N{}/E{}'.format(args.dataset, args.num_users, FLepoch)):
         os.makedirs('./save/FUL/{}/N{}/E{}'.format(args.dataset, args.num_users, FLepoch))
@@ -83,7 +74,7 @@ def main():
         if args.iid:
             dict_users = cifar_iid(dataset_train, args.num_users)
         else:
-            dict_users = cifar100_noniid(dataset_train, args.num_users)
+            dict_users = cifar_noniid(dataset_train, args.num_users)
     elif args.dataset == 'cifar100':
         trans_cifar = transforms.Compose(
             [transforms.Resize(224), transforms.ToTensor(),
@@ -93,7 +84,7 @@ def main():
         if args.iid:
             dict_users = cifar_iid(dataset_train, args.num_users)
         else:
-            dict_users = cifar100_noniid(dataset_train, args.num_users)
+            dict_users = cifar_noniid(dataset_train, args.num_users)
     elif args.dataset == 'imagenet-tiny':
         trans_imagetiny = transforms.Compose([transforms.Resize(224), transforms.ToTensor(),
                                               transforms.Normalize( (0.4802, 0.4481, 0.3975), (0.2770, 0.2691, 0.2821))])
@@ -167,10 +158,10 @@ def main():
     # 复制MU
     MU_old = [MU[i].clone() for i in range(len(MU))]
 
-    cnt = 0
+    # Memory regression 对MU进行预处理，剔除高权重参数
     for i,(m,u) in enumerate(zip(delta_M,delta_U)):
         for j,(mm,uu) in enumerate(zip(m,u)):
-            if abs(mm)<abs(client_data_sizes[0]/sum_client_data_sizes * uu):
+            if abs(mm)<abs(uu)/args.lambda_:
                 for k in range(i,len(MU)):
                     if k == 0:
                         continue
@@ -259,4 +250,3 @@ def main():
 if __name__ == '__main__':
     main()
 
-    # 统计时间
