@@ -1,0 +1,3 @@
+Download CIFAR10 and CIFAR100 from PyTorch
+Download CINIC10 from link: https://datashare.ed.ac.uk/download/DS_10283_3192.zip
+Download ImageNetTiny from link: https://cs231n.stanford.edu/tiny-imagenet-200.zip
