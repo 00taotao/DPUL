@@ -1,29 +1,21 @@
 import copy
 import os
 import time
-
 import numpy as np
 import torch
 from peft import LoraConfig, get_peft_model
 from torchvision import datasets
 from matplotlib import pyplot as plt
-from torch import nn
 from torchvision import transforms
-from torchvision.datasets import MNIST
 from torch import nn
 from transformers import ViTImageProcessor, ViTForImageClassification
-
-from models.Autoencoder import AutoEncoder, VAE, AutoEncoder2, AutoEncoder1, ConvAutoEncoder, CAE_hidden
-from models.Fed import FedAvg
-from models.Nets import CNNMnist, CNNCifar, MLP, LeNet5
 from models.Update import LocalUpdate, LocalUpdate_vit
 from models.VAE import BetaVAE_H
 from models.Vectomodel import vectomodel_vit
 from models.test import test_img, test_vit
 from utils.load_datasets import TinyImageNet, CINIC10
 from utils.options import args_parser
-from utils.sample import cifar100_noniid, imagenet_tiny_noniid, cinic10_noniid
-from utils.sampling import mnist_iid, mnist_noniid, cifar_iid
+from utils.sample import cifar_noniid, imagenet_tiny_noniid, cinic10_noniid, mnist_iid, cifar_iid
 from utils.seed import set_seed
 
 if __name__ == '__main__':
@@ -53,7 +45,7 @@ if __name__ == '__main__':
         if args.iid:
             dict_users = cifar_iid(dataset_train, args.num_users)
         else:
-            dict_users = cifar100_noniid(dataset_train, args.num_users)
+            dict_users = cifar_noniid(dataset_train, args.num_users)
     elif args.dataset == 'cifar100':
         trans_cifar = transforms.Compose(
             [transforms.Resize(224), transforms.ToTensor(),
@@ -63,7 +55,7 @@ if __name__ == '__main__':
         if args.iid:
             dict_users = cifar_iid(dataset_train, args.num_users)
         else:
-            dict_users = cifar100_noniid(dataset_train, args.num_users)
+            dict_users = cifar_noniid(dataset_train, args.num_users)
     elif args.dataset == 'imagenet-tiny':
         trans_imagetiny = transforms.Compose([transforms.Resize(224), transforms.ToTensor(),
                                               transforms.Normalize((0.4802, 0.4481, 0.3975), (0.2770, 0.2691, 0.2821))])
@@ -96,7 +88,7 @@ if __name__ == '__main__':
         lora_config = LoraConfig(r=8, lora_alpha=16, lora_dropout=0.1, target_modules=["classifier", ])
         net_glob = get_peft_model(model, lora_config).to(args.device)
     elif args.model == 'Vitl' and args.dataset == 'imagenet-tiny':
-        model_path = './data/Vit-large-patch16-224'
+        model_path = './data/Vit-large-patch16-224-in21k'
         feature_extractor = ViTImageProcessor.from_pretrained(model_path)
         model = ViTForImageClassification.from_pretrained(model_path)
         model.classifier = torch.nn.Linear(model.classifier.in_features, 200)
@@ -123,7 +115,7 @@ if __name__ == '__main__':
     # 加载数据
     for i in range(args.epochs):
         M.append(torch.load('./save/FL/{}/{}/N{}/E{}/M{}.pth'.format(args.dataset, args.lr,args.num_users,args.epochs, i),map_location=args.device))
-        MU.append(torch.load('./save/FL/{}/{}/N{}/E{}/MU{}.pth'.format(args.dataset, args.lr,args.num_users,args.epochs, i),map_location=args.device))
+        MU.append(torch.load('./save/FL/{}/{}/N{}/E{}/U{}.pth'.format(args.dataset, args.lr,args.num_users,args.epochs, i),map_location=args.device))
     # 载入准确率
     with open('./save/FL/{}/{}/N{}/E{}/val_acc.txt'.format(args.dataset, args.lr,args.num_users,args.epochs), 'r') as f:
         fl_acc = [float(i) for i in f.readlines()]

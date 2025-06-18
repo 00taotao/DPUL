@@ -91,8 +91,12 @@ if __name__ == '__main__':
     else:
         exit('Error: unrecognized model')
 
-    iter_new = 0
+    acc, loss = test_vit(net_glob, dataset_test, args)
+    val_loss, val_acc = [], []
+    val_loss.append(loss)
+    val_acc.append(acc)
     # 查找储存的模型，查看到上次中断到第几轮，并加载模型，继续运行到最后
+    iter_new = 0
     for i in tqdm(range(args.epochs)):
         if os.path.exists('./save/FL/{}/{}/N{}/E{}/M{}.pth'.format(args.dataset, args.lr,args.num_users, args.epochs,i)):
             M = torch.load('./save/FL/{}/{}/N{}/E{}/M{}.pth'.format(args.dataset, args.lr,args.num_users, args.epochs,i), map_location=args.device)
@@ -110,7 +114,6 @@ if __name__ == '__main__':
             iter_new = i
             break
     # 测试准确率
-    acc, loss = test_vit(net_glob, dataset_test, args)
     # 对epoch进行处理
     print('Epochs:{}'.format(iter_new))
     net_glob.train()
@@ -119,9 +122,7 @@ if __name__ == '__main__':
     w_glob = net_glob.state_dict()
     # 训练
     loss_train = []
-    val_loss, val_acc = [], []
-    val_loss.append(loss)
-    val_acc.append(acc)
+
     client_data_sizes = [len(dict_users[i]) for i in range(args.num_users)]
 
     idxs_users = range(args.num_users)
