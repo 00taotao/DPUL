@@ -1,16 +1,9 @@
 import io
-
 import pandas as pd
-from torch.utils.data import Dataset, DataLoader
-from torchvision import models, utils, datasets, transforms
-import numpy as np
 import sys
 import os
 from PIL import Image
-import gzip
-import torch
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms
 
 
 class TinyImageNet(Dataset):

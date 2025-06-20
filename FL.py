@@ -9,12 +9,14 @@ from transformers import ViTImageProcessor, ViTForImageClassification,ViTModel
 from models.FedAvg import FedAvg_noniid_float, FedAvg_noniid_float_www
 from models.Update import LocalUpdate, LocalUpdate_vit
 from models.Vectomodel import  vectomodel_vit
+from models.seed import setup_seed
 from models.test import test_img, test_vit
 from utils.options import args_parser
 from utils.sample import cifar_noniid, imagenet_tiny_noniid, cinic10_noniid, cifar_noniid
 from utils.load_datasets import TinyImageNet, CINIC10
 
 if __name__ == '__main__':
+    setup_seed(0)
     # 初始化参数
     args = args_parser()
     args.lr = 5e-5

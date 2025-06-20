@@ -10,11 +10,11 @@ from transformers import ViTImageProcessor, ViTForImageClassification
 
 from models.VAE import BetaVAE_H
 from models.Vectomodel import vectomodel_vit
+from models.seed import setup_seed
 from models.test import test_img, test_vit
 from utils.load_datasets import TinyImageNet, CINIC10
 from utils.options import args_parser
 from utils.sample import cifar_noniid, cinic10_noniid, imagenet_tiny_noniid, cifar_iid
-from utils.seed import set_seed
 from tqdm import tqdm
 import torch.multiprocessing as mp
 import time
@@ -248,5 +248,6 @@ def main():
             f.write(str(cos.item()) + '\n')
 
 if __name__ == '__main__':
+    setup_seed(0)
     main()
 

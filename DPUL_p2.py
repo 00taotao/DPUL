@@ -12,15 +12,15 @@ from transformers import ViTImageProcessor, ViTForImageClassification
 from models.Update import LocalUpdate, LocalUpdate_vit
 from models.VAE import BetaVAE_H
 from models.Vectomodel import vectomodel_vit
+from models.seed import setup_seed
 from models.test import test_img, test_vit
 from utils.load_datasets import TinyImageNet, CINIC10
 from utils.options import args_parser
 from utils.sample import cifar_noniid, imagenet_tiny_noniid, cinic10_noniid, mnist_iid, cifar_iid
-from utils.seed import set_seed
 
 if __name__ == '__main__':
     # 初始化参数
-    set_seed(0)
+    setup_seed(0)
     args = args_parser()
     args.epochs = 50
     args.num_users = 10
@@ -33,9 +33,9 @@ if __name__ == '__main__':
     args.lr = 5e-5
     learning_rate = 5e-5
     args.post_epochs = 50
+    if not os.path.exists('./save/FUL/{}/N{}/E{}/compare'.format(args.dataset, args.num_users, args.epochs)):
+        os.makedirs('./save/FUL/{}/N{}/E{}/compare'.format(args.dataset, args.num_users, args.epochs))
     # 加载数据集
-    if not os.path.exists('./save/{}/N{}/E{}/compare'.format(args.dataset, args.num_users, args.epochs)):
-        os.makedirs('./save/{}/N{}/E{}/compare'.format(args.dataset, args.num_users, args.epochs))
     if args.dataset == 'cifar10':
         trans_cifar = transforms.Compose(
             [transforms.Resize(224), transforms.ToTensor(),
@@ -203,19 +203,20 @@ if __name__ == '__main__':
     with open('./save/FUL/{}/N{}/E{}/compare/AE{}loss.txt'.format(args.dataset, args.num_users, args.epochs,args.AE_epochs), 'w') as f:
         for loss in val_loss_list:
             f.write(str(loss) + '\n')
-    with open('./save/FUL/{}/N{}/E{}/compare/FLacc.txt'.format(args.dataset, args.num_users, args.epochs), 'w') as f:
-        for acc in val_acc:
-            f.write(str(acc) + '\n')
-    with open('./save/FUL/{}/N{}/E{}/compare/FLloss.txt'.format(args.dataset, args.num_users, args.epochs), 'w') as f:
-        for loss in val_loss:
-            f.write(str(loss) + '\n')
     # 保存时间
     with open('./save/FUL/{}/N{}/E{}/time.txt'.format(args.dataset, args.num_users,args.epochs), 'w') as f:
         f.write(str(end - start_time) + '\n')
 
     with open('./save/FL/{}/{}/N{}/E{}/val_acc.txt'.format(args.dataset, args.lr,args.num_users,args.epochs), 'r') as f:
         val_acc = [float(i) for i in f.readlines()]
-
+    with open('./save/FL/{}/{}/N{}/E{}/val_loss.txt'.format(args.dataset,args.lr, args.num_users,args.epochs), 'r') as f:
+        val_loss = [float(i) for i in f.readlines()]
+    with open('./save/FUL/{}/N{}/E{}/compare/FLacc.txt'.format(args.dataset, args.num_users, args.epochs), 'w') as f:
+        for acc in val_acc:
+            f.write(str(acc) + '\n')
+    with open('./save/FUL/{}/N{}/E{}/compare/FLloss.txt'.format(args.dataset, args.num_users, args.epochs), 'w') as f:
+        for loss in val_loss:
+            f.write(str(loss) + '\n')
     plt.figure()
     plt.plot(range(args.post_epochs + 1), val_acc_list, label='DPUL')
     plt.plot(range(len(val_acc)), val_acc, label='FL')
@@ -225,11 +226,8 @@ if __name__ == '__main__':
     plt.xticks(np.arange(0, args.post_epochs + 1, 1))
     plt.legend()
     # 如果没有文件夹则创建文件夹
-
     plt.savefig(
         './save/FUL/{}/N{}/E{}/compare/VAE{}acc.png'.format(args.dataset, args.num_users, args.epochs, args.AE_epochs))
-    with open('.save/FL/{}/{}/N{}/E{}/val_loss.txt'.format(args.dataset,args.lr, args.num_users,args.epochs), 'r') as f:
-        val_loss = [float(i) for i in f.readlines()]
 
     plt.figure()
     plt.plot(range(args.post_epochs + 1), val_loss_list, label='DPUL')
