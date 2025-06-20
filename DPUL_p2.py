@@ -196,10 +196,6 @@ if __name__ == '__main__':
     # 绘制图像
     # 加载val_acc.txt 和val_loss.txt
 
-    with open('./save/FL/{}/{}/N{}/E{}/val_acc.txt'.format(args.dataset, args.lr,args.num_users,args.epochs), 'r') as f:
-        val_acc = [float(i) for i in f.readlines()]
-    with open('.save/FL/{}/{}/N{}/E{}/val_loss.txt'.format(args.dataset,args.lr, args.num_users,args.epochs), 'r') as f:
-        val_loss = [float(i) for i in f.readlines()]
 
     with open('./save/FUL/{}/N{}/E{}/compare/AE{}acc.txt'.format(args.dataset, args.num_users, args.epochs,args.AE_epochs), 'w') as f:
         for acc in val_acc_list:
@@ -216,6 +212,10 @@ if __name__ == '__main__':
     # 保存时间
     with open('./save/FUL/{}/N{}/E{}/time.txt'.format(args.dataset, args.num_users,args.epochs), 'w') as f:
         f.write(str(end - start_time) + '\n')
+
+    with open('./save/FL/{}/{}/N{}/E{}/val_acc.txt'.format(args.dataset, args.lr,args.num_users,args.epochs), 'r') as f:
+        val_acc = [float(i) for i in f.readlines()]
+
     plt.figure()
     plt.plot(range(args.post_epochs + 1), val_acc_list, label='DPUL')
     plt.plot(range(len(val_acc)), val_acc, label='FL')
@@ -228,6 +228,9 @@ if __name__ == '__main__':
 
     plt.savefig(
         './save/FUL/{}/N{}/E{}/compare/VAE{}acc.png'.format(args.dataset, args.num_users, args.epochs, args.AE_epochs))
+    with open('.save/FL/{}/{}/N{}/E{}/val_loss.txt'.format(args.dataset,args.lr, args.num_users,args.epochs), 'r') as f:
+        val_loss = [float(i) for i in f.readlines()]
+
     plt.figure()
     plt.plot(range(args.post_epochs + 1), val_loss_list, label='DPUL')
     plt.plot(range(len(val_loss)), val_loss, label='FL')

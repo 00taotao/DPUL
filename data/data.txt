@@ -1,3 +1,7 @@
 Download CIFAR10 and CIFAR100 from PyTorch
 Download CINIC10 from link: https://datashare.ed.ac.uk/download/DS_10283_3192.zip
 Download ImageNetTiny from link: https://cs231n.stanford.edu/tiny-imagenet-200.zip
+Download VIT-small from link: https://huggingface.co/WinKawaks/vit-small-patch16-224/tree/main
+Download VIT-base from link: https://huggingface.co/google/vit-base-patch16-224-in21k/tree/main
+Download Deit-base from link: https://huggingface.co/facebook/deit-base-distilled-patch16-224
+Download VIT-large from link: https://huggingface.co/google/vit-large-patch16-224-in21k
