@@ -139,15 +139,15 @@ utils folder: This folder contains the implementation of the dataset loader, the
 
 --all_clients: Whether to aggregate updates from all clients. Default is False unless the flag is specified.
 
---AE_epochs: The number of autoencoder training epochs. The default value is 100.
+--AE_epochs: The number of VAE training epochs. The default value is 100.
 
---slices: The number of slices to split data into. The default value is 10.
+--slices: The number of slices to split parameter into. The default value is 10.
 
 --post_epochs: The number of training epochs in post-processing. The default value is 50.
 
---beta: The beta parameter, typically for regularization or loss weighting. The default value is 0.5.
+--beta: The beta parameter, for VAE loss coefficient. The default value is 0.5.
 
---lambda_: The lambda parameter, typically for regularization. The default value is 6.
+--lambda_: The lambda parameter, for High-weight coefficient. The default value is 6.
 
 ## Execute DPUL
 Edit FL.py, DPUL_p1.py or DPUL_p2.pyfiles, modify parameters, such as datasets, epochs, model and so on, and run FL first, then run DPUL_p1, finally run DPUL_p2.
