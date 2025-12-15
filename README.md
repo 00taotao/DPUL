@@ -1,4 +1,4 @@
-# DPUL(Federated Deep Unlearning)
+# DPUL(Dual-Phase Federated Deep Unlearning via Weight-Aware Rollback and Reconstruction)
 ## About The Project
 DPUL is a framework for federated deep unlearning, which allows for the removal of specific data from machine learning models in a federated learning setting.
 ## Presented Unlearning method:
