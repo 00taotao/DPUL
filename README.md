@@ -6,6 +6,19 @@
 - **IEEE Xplore**: https://doi.org/10.1109/INFOCOM59046.2026.11571665
 - **Conference**: IEEE INFOCOM 2026
 
+### 📋 Citation
+
+```bibtex
+@inproceedings{zhou2026dual,
+  title={Dual-Phase Federated Deep Unlearning via Weight-Aware Rollback and Reconstruction},
+  author={Zhou, Changjun and Zheng, Jintao and Yang, Leyou and Wang, Pengfei},
+  booktitle={IEEE INFOCOM 2026 - IEEE Conference on Computer Communications},
+  pages={1-10},
+  year={2026},
+  doi={10.1109/INFOCOM59046.2026.11571665}
+}
+```
+
 ---
 
 ## 📝 Abstract
