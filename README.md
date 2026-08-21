@@ -35,9 +35,11 @@ Federated Unlearning (FUL) focuses on client data and computing power to offer a
 | Dataset | DPUL | FA | Improvement |
 |---------|------|-----|-------------|
 | CIFAR-10 | **88.82%** | 87.79% | +1.03% |
-| CINIC-10 | **83.21%** | - | - |
+| CINIC-10 | **83.21%** | N/A | +45.09% vs OB |
 | CIFAR-100 | **68.12%** | 51.35% | +16.77% |
 | ImageNet-tiny | **69.92%** | 35.41% | +34.51% |
+
+*Note: FA baseline was not evaluated on CINIC-10 in the paper; CINIC-10 is compared against OB (Original Baseline) instead.*
 
 ![Fig. 4: Accuracy Recovery Performance](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig4.png)
 
