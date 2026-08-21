@@ -1,13 +1,79 @@
-# DPUL(Dual-Phase Federated Deep Unlearning via Weight-Aware Rollback and Reconstruction)
+# DPUL: Dual-Phase Federated Deep Unlearning via Weight-Aware Rollback and Reconstruction
+
+## 📄 Paper Links
+
+- **arXiv**: https://arxiv.org/abs/2512.13381
+- **IEEE Xplore**: https://doi.org/10.1109/INFOCOM59046.2026.11571665
+- **Conference**: IEEE INFOCOM 2026
+
+---
+
+## 📝 Abstract
+
+Federated Unlearning (FUL) focuses on client data and computing power to offer a privacy-preserving solution. However, high computational demands, complex incentive mechanisms, and disparities in client-side computing power often lead to long waiting time and high costs. To address these challenges, many existing methods rely on server-side knowledge distillation that solely removes the updates of the target client, overlooking the privacy embedded in the contributions of other clients, which can lead to privacy leakage. In this work, we introduce DPUL, a novel server-side unlearning method that deeply unlearns all influential weights to prevent privacy pitfalls. Our approach comprises three components: (i) identifying high-weight parameters by filtering client update magnitudes, and rolling them back to ensure deep removal, (ii) leveraging the variational autoencoder (VAE) to reconstruct and eliminate low-weight parameters, (iii) utilizing a projection-based technique to recover the model. Experimental results on four datasets demonstrate that DPUL surpasses state-of-the-art baselines, providing a 1%–5% improvement in accuracy and up to 12× reduction in time cost.
+
+**Index Terms**—Federated unlearning, large model, deep unlearning, data trading.
+
+---
+
+## 🎯 Key Results
+
+### Overall Method Comparison
+
+![Fig. 1: DPUL vs Traditional Methods](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig1.jpeg)
+
+*Traditional federated unlearning requires client participation, while DPUL operates entirely server-side.*
+
+### Method Overview
+
+![Fig. 3: DPUL Full Workflow](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig3.jpeg)
+
+*Three phases: Memory Rollback → Reconstruction Unlearning (β-VAE) → Projected Boost Recovery*
+
+### Accuracy Recovery (4 Datasets)
+
+| Dataset | DPUL | FA | Improvement |
+|---------|------|-----|-------------|
+| CIFAR-10 | **88.82%** | 87.79% | +1.03% |
+| CINIC-10 | **83.21%** | - | - |
+| CIFAR-100 | **68.12%** | 51.35% | +16.77% |
+| ImageNet-tiny | **69.92%** | 35.41% | +34.51% |
+
+![Fig. 4: Accuracy Recovery Performance](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig4.png)
+
+### Efficiency
+
+- **~12× speedup** vs Retrain
+- **~4× speedup** vs FE/RR
+- Runtime independent of client count
+
+![Fig. 6: Time Consumption Analysis](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig6.png)
+
+### Unlearning Effectiveness (Backdoor Attack)
+
+- Attack accuracy reduced to **0.58%–4.18%** (matching Retrain)
+- FD shows instability with accuracy increasing in some rounds
+
+![Fig. 7: Backdoor Attack Verification](https://raw.githubusercontent.com/00taotao/DPUL/main/README_figures/fig7.png)
+
+---
+
 ## About The Project
+
 DPUL is a framework for federated deep unlearning, which allows for the removal of specific data from machine learning models in a federated learning setting.
-## Presented Unlearning method:
-- **MP(Memory Process)**: The MP mehtod is to regress the parameter to the state without high-weight contribution.
-- **DU(Deep Unlearning)**: The DU method aims to remove the influence of low-weight contribution with assisstance of reconstrucion network. Refactoring all parameters using a reconstruction network.
-- **PBR(Projected Boost Recovery)**: The PBR method is to recovery the unlearning model with help of projection method.
+
+### Presented Unlearning Methods:
+
+- **MP (Memory Process)**: Regresses parameters to the state without high-weight contribution.
+- **DU (Deep Unlearning)**: Removes the influence of low-weight contributions with assistance of a reconstruction network, refactoring all parameters.
+- **PBR (Projected Boost Recovery)**: Recovers the unlearning model with the help of projection method.
+
+---
+
 ## Getting Started
+
 ### Requirements
-### Requirements
+
 | Package      | Version      |
 |--------------|--------------|
 | torch        | 1.12.1+cu113 |
@@ -22,6 +88,7 @@ DPUL is a framework for federated deep unlearning, which allows for the removal 
 | pillow       | 11.0.0       |
 
 ### File Structure
+
 ```
 ├─data
 │    └─ datasets.txt
@@ -45,110 +112,64 @@ DPUL is a framework for federated deep unlearning, which allows for the removal 
 ├─ FL.py
 └─ README.md
 ```
-There are severl parts in the code:
-- data folder: This folder contains the training and testing data forthe target model. In order to reduce the memory space, we just list thelinks to theset dataset here.
 
--- CIFAR10 and CIFAR100 download from PyTorch
+There are several parts in the code:
 
--- CINIC10 download link: https://datashare.ed.ac.uk/download/DS_10283_3192.zip
+- **data folder**: Contains training and testing data links. To reduce memory space, we list download links here.
+  - CIFAR-10 and CIFAR-100: download from PyTorch
+  - CINIC-10: https://datashare.ed.ac.uk/download/DS_10283_3192.zip
+  - ImageNetTiny: https://cs231n.stanford.edu/tiny-imagenet-200.zip
+  - ViT-small: https://huggingface.co/WinKawaks/vit-small-patch16-224/tree/main
+  - ViT-base: https://huggingface.co/google/vit-base-patch16-224-in21k/tree/main
+  - DeiT-base: https://huggingface.co/facebook/deit-base-distilled-patch16-224
+  - ViT-large: https://huggingface.co/google/vit-large-patch16-224-in21k
 
--- ImageNetTiny download link: https://cs231n.stanford.edu/tiny-imagenet-200.zip
+- **models folder**: Contains the implementation of the VAE model, federated learning algorithm, and unlearning algorithm.
+  - `Update.py`: Federated learning algorithm
+  - `test.py`: Test model performance
+  - `seed.py`: Set random seed for reproducibility
+  - `VAE.py`: VAE model for the DU method
+  - `Vectomodel.py`: Vector model for the MP method
 
--- VIT-small download link: https://huggingface.co/WinKawaks/vit-small-patch16-224/tree/main
+- **utils folder**: Contains dataset loader, options parser, and sample loader.
+  - `load_datasets.py`: Load datasets
+  - `options.py`: Parse command-line options
+  - `sample.py`: Load samples
 
--- VIT-base download link: https://huggingface.co/google/vit-base-patch16-224-in21k/tree/main
+- `DPUL_p1.py`: Implements DPUL with MP and DU methods
+- `DPUL_p2.py`: Implements DPUL with PBR method
+- `FL.py`: Federated learning algorithm
 
--- Deit-base download link: https://huggingface.co/facebook/deit-base-distilled-patch16-224
-
--- VIT-large download link: https://huggingface.co/google/vit-large-patch16-224-in21k
-
-- models folder: 
-This folder contains the implementation of the VAE model, the federated learning algorithm, and the unlearning algorithm.
-
--- The federated learning algorithm is implemented in the Update.py file.
-
--- The test.py file is used to test the performance of the target model.
-
--- The seed.py file is used to set the random seed for reproducibility.
-
--- The VAE.py file is used to implement the VAE model for the DU method.
-
--- The Vectomodel.py file is used to implement the vector model for the MP method.
-
-- utils folder:
-utils folder: This folder contains the implementation of the dataset loader, the options parser, and the sample loader.
-
--- The load_datasets.py file is used to load the datasets.
-
--- The options.py file is used to parse the options.
-
--- The sample.py file is used to load the sample.
-
-- DPUL_p1.py: This file is used to implement the DPUL method with the MP method and DU method.
-
-- DPUL_p2.py: This file is used to implement the DPUL method with the PBR method.
-
-- FL.py: This file is used to implement the federated learning algorithm.
+---
 
 ## Parameter Setting of DPUL
---epochs: The number of FL training epochs. The default value is 50.
 
---num_users: The number of users (clients) participating in FL. The default value is 10.
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| --epochs | 50 | Number of FL training epochs |
+| --num_users | 10 | Number of clients |
+| --frac | 1 | Fraction of clients per round |
+| --local_ep | 1 | Local training epochs |
+| --local_bs | 128 | Local batch size |
+| --bs | 128 | Testing batch size |
+| --lr | 0.001 | Learning rate |
+| --momentum | 0.9 | SGD momentum |
+| --split | 'user' | Train-test split type |
+| --model | 'cnn' | Model architecture |
+| --dataset | 'mnist' | Dataset name |
+| --iid | False | Whether dataset is i.i.d |
+| --gpu | 0 | GPU ID (-1 for CPU) |
+| --beta | 0.5 | VAE loss coefficient |
+| --lambda_ | 6 | High-weight coefficient |
+| --slices | 10 | Number of parameter slices |
+| --AE_epochs | 100 | VAE training epochs |
+| --post_epochs | 50 | Post-processing epochs |
 
---frac: The fraction of clients selected in each training round. The default value is 1.
-
---local_ep: The number of local epochs per client. The default value is 1.
-
---local_bs: The local batch size used during client training. The default value is 128.
-
---bs: The batch size used for testing. The default value is 128.
-
---lr: The learning rate for training. The default value is 0.001.
-
---momentum: The momentum used in SGD optimization. The default value is 0.9.
-
---split: The type of train-test split (user or sample). The default value is 'user'.
-
---model: The model architecture to be used (e.g., cnn). The default value is 'cnn'.
-
---kernel_num: The number of each kind of convolutional kernel. The default value is 9.
-
---kernel_sizes: Comma-separated kernel sizes for convolution. The default value is '3,4,5'.
-
---norm: The normalization method used (batch_norm, layer_norm, or None). The default value is 'batch_norm'.
-
---num_filters: The number of filters in the convolutional layers. The default value is 32.
-
---max_pool: Whether to use max pooling instead of strided convolutions. The default value is 'True'.
-
---dataset: The name of the dataset used for training. The default value is 'mnist'.
-
---iid: Whether the dataset is independent and identically distributed (i.i.d). Default is False when used.
-
---num_classes: The number of output classes. The default value is 10.
-
---num_channels: The number of image channels. The default value is 1.
-
---gpu: The ID of the GPU to use. Set -1 to use CPU. The default value is 0.
-
---stopping_rounds: The number of rounds for early stopping. The default value is 10.
-
---verbose: Enable verbose output. Default is True unless the flag is specified.
-
---seed: The random seed for initialization. The default value is 1.
-
---all_clients: Whether to aggregate updates from all clients. Default is False unless the flag is specified.
-
---AE_epochs: The number of VAE training epochs. The default value is 100.
-
---slices: The number of slices to split parameter into. The default value is 10.
-
---post_epochs: The number of training epochs in post-processing. The default value is 50.
-
---beta: The beta parameter, for VAE loss coefficient. The default value is 0.5.
-
---lambda_: The lambda parameter, for High-weight coefficient. The default value is 6.
+---
 
 ## Execute DPUL
-Edit FL.py, DPUL_p1.py or DPUL_p2.pyfiles, modify parameters, such as datasets, epochs, model and so on, and run FL first, then run DPUL_p1, finally run DPUL_p2.
 
+1. Edit `FL.py`, `DPUL_p1.py` or `DPUL_p2.py`, modify parameters (datasets, epochs, model, etc.)
+2. Run FL first: `python FL.py`
+3. Then run DPUL_p1: `python DPUL_p1.py`
+4. Finally run DPUL_p2: `python DPUL_p2.py`
